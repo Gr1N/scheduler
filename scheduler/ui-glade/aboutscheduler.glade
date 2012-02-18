@@ -11,6 +11,7 @@
     <property name="version">0.0.1</property>
     <property name="copyright" translatable="yes">Copyright © 2012 Nikita Grishko</property>
     <property name="comments" translatable="yes">Scheduler for BSUIR students</property>
+    <property name="website">https://github.com/Gr1N/scheduler</property>
     <property name="license" translatable="yes">Copyright (c) 2012 Grishko Nikita
 
 Permission is hereby granted, free of charge, to any person obtaining
