@@ -11,6 +11,7 @@ pygtk.require('2.0')
 import gtk
 
 from aboutwindow import AboutWindow
+from preferenceswindow import PreferencesWindow
 from datasingletons import Params
 
 
@@ -38,7 +39,7 @@ class SchedulerMenu(gtk.Menu):
 
         menu_item = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
         self.append(menu_item)
-#        menu_item.connect()  # TODO: add connect to preferences window
+        menu_item.connect('activate', lambda e: PreferencesWindow())
         menu_item.show()
 
         menu_item = gtk.SeparatorMenuItem()
