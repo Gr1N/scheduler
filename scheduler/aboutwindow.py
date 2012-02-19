@@ -26,5 +26,6 @@ class AboutWindow(gtk.Builder):
         about.run()
         about.hide()
 
+
 if __name__ == '__main__':
     print __doc__.strip()
