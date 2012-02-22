@@ -28,12 +28,15 @@ class PreferencesWindow(gtk.Builder):
         siglans_dict = {
             'on_applybutton_clicked': lambda w: self._save_all(),
             'on_cancelbutton_clicked': lambda w: self._window.destroy(),
-            'on_okbutton_clicked': self._on_ok_button_clicked
+            'on_okbutton_clicked': self._on_ok_button_clicked,
+            'on_weekday_changed': self._on_weekday_changed,
+            'on_weeknum_changed': self._on_weeknum_changed
         }
         self.connect_signals(siglans_dict)
 
         self._set_fonts_colors()
         self._set_time_date()
+        self._set_schedule_day('Monday', 0)
 
     def _on_ok_button_clicked(self, widget):
         """ Handler for okbutton.
@@ -41,14 +44,31 @@ class PreferencesWindow(gtk.Builder):
         self._save_all()
         self._window.destroy()
 
+    def _on_weekday_changed(self, widget):
+        """ Handler for weekday spinbutton.
+        """
+        self._set_schedule_day(
+            widget.get_active_text(),
+            self.get_object('weeknum').get_active()
+        )
+
+    def _on_weeknum_changed(self, widget):
+        """ Handler for weeknum spinbutton.
+        """
+        self._set_schedule_day(
+            self.get_object('weekday').get_active_text(),
+            widget.get_active()
+        )
+
     def _save_all(self):
         """ Save all data from window.
         """
         self._save_fonts_colors()
         self._save_time_date()
+        self._save_schedule_day()
 
     def _save_fonts_colors(self):
-        """ Save all data from 'Fonts & colors' tab.
+        """ Save all data from 'Fonts & colors' tab to 'Params' singleton.
         """
         widget = self.get_object('defaultfont')
         Params().set_default_font(widget.get_font_name())
@@ -66,7 +86,8 @@ class PreferencesWindow(gtk.Builder):
         Params().set_day_color(widget.get_color())
 
     def _set_fonts_colors(self):
-        """ Set all font and color data from singleton to 'Fonts & colors' tab.
+        """ Set all font and color data from 'Params' singleton
+        to 'Fonts & colors' tab.
         """
         widget = self.get_object('defaultfont')
         widget.set_font_name(Params().get_default_font())
@@ -84,7 +105,7 @@ class PreferencesWindow(gtk.Builder):
         widget.set_color(Params().get_day_color())
 
     def _save_time_date(self):
-        """ Save all data from 'Time & date' tab.
+        """ Save all data from 'Time & date' tab to 'Schedule' singleton.
         """
         widget = self.get_object('currweek')
         Schedule().set_current_week(widget.get_text())
@@ -106,7 +127,8 @@ class PreferencesWindow(gtk.Builder):
         Schedule().set_lessons_time(lessons_time)
 
     def _set_time_date(self):
-        """ Set all time and date data from singleton to 'Time & date' tab.
+        """ Set all time and date data from 'Schedule' singleton
+        to 'Time & date' tab.
         """
         widget = self.get_object('currweek')
         widget.set_text(Schedule().get_current_week())
@@ -121,6 +143,62 @@ class PreferencesWindow(gtk.Builder):
             widget.set_text(lessons_time[i][1].split(':')[0])
             widget = self.get_object('l%de2' % (i + 1))
             widget.set_text(lessons_time[i][1].split(':')[1])
+
+    def _save_schedule_day(self):
+        """ Save all data about active day from 'Schedule' tab
+        to 'Schedule' singleton.
+        """
+        schedule = []
+        for i in range(8):
+            schedule.append(
+                [
+                    self.get_object('l%dsub' % (i + 1)).get_active_text(),
+                    self.get_object('l%dname' % (i + 1)).get_text(),
+                    self.get_object('l%dtype' % (i + 1)).get_active_text(),
+                    self.get_object('l%dclass' % (i + 1)).get_text(),
+                    self.get_object('l%dlector' % (i + 1)).get_text()
+                ]
+            )
+        Schedule().set_schedule(
+            self.get_object('weekday').get_active_text(),
+            self.get_object('weeknum').get_active(),
+            schedule
+        )
+
+    def _set_schedule_day(self, day, week):
+        """ Set all data about active day from 'Schedule' singleton
+        to 'Schedule' tab.
+        """
+        schedule = Schedule().get_schedule(day, week)
+
+        def get_sub(sub):
+            if sub == '1':
+                return 0
+            elif sub == '2':
+                return 1
+            else:
+                return -1
+
+        def get_type(type):
+            if type == 'LC':
+                return 0
+            elif type == 'LB':
+                return 1
+            elif type == 'PR':
+                return 2
+            else:
+                return -1
+
+        for i in range(8):
+            self.get_object('l%dsub' % (i + 1)).set_active(
+                get_sub(schedule[i][0])
+            )
+            self.get_object('l%dname' % (i + 1)).set_text(schedule[i][1])
+            self.get_object('l%dtype' % (i + 1)).set_active(
+                get_type(schedule[i][2])
+            )
+            self.get_object('l%dclass' % (i + 1)).set_text(schedule[i][3])
+            self.get_object('l%dlector' % (i + 1)).set_text(schedule[i][4])
 
 
 if __name__ == '__main__':
