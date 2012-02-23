@@ -172,9 +172,9 @@ class PreferencesWindow(gtk.Builder):
         for i in range(8):
             schedule.append(
                 [
-                    self.get_object('l%dsub' % (i + 1)).get_active_text(),
+                    self.get_object('l%dsub' % (i + 1)).get_active(),
                     self.get_object('l%dname' % (i + 1)).get_text(),
-                    self.get_object('l%dtype' % (i + 1)).get_active_text(),
+                    self.get_object('l%dtype' % (i + 1)).get_active(),
                     self.get_object('l%dclass' % (i + 1)).get_text(),
                     self.get_object('l%dlector' % (i + 1)).get_text()
                 ]
@@ -190,33 +190,10 @@ class PreferencesWindow(gtk.Builder):
         to 'Schedule' tab.
         """
         schedule = Schedule().get_schedule(day, week)
-
-        def get_sub(sub):
-            if sub == '1':
-                return 0
-            elif sub == '2':
-                return 1
-            else:
-                return -1
-
-        def get_type(type):
-            if type == 'LC':
-                return 0
-            elif type == 'LB':
-                return 1
-            elif type == 'PR':
-                return 2
-            else:
-                return -1
-
         for i in range(8):
-            self.get_object('l%dsub' % (i + 1)).set_active(
-                get_sub(schedule[i][0])
-            )
+            self.get_object('l%dsub' % (i + 1)).set_active(schedule[i][0])
             self.get_object('l%dname' % (i + 1)).set_text(schedule[i][1])
-            self.get_object('l%dtype' % (i + 1)).set_active(
-                get_type(schedule[i][2])
-            )
+            self.get_object('l%dtype' % (i + 1)).set_active(schedule[i][2])
             self.get_object('l%dclass' % (i + 1)).set_text(schedule[i][3])
             self.get_object('l%dlector' % (i + 1)).set_text(schedule[i][4])
 
