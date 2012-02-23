@@ -128,7 +128,7 @@ class PreferencesWindow(gtk.Builder):
         """ Save all data from 'Time & date' tab to 'Schedule' singleton.
         """
         widget = self.get_object('currweek')
-        Schedule().set_current_week(widget.get_text())
+        Schedule().set_current_week(widget.get_value_as_int())
 
         lessons_time = []
         for i in range(8):
@@ -151,7 +151,7 @@ class PreferencesWindow(gtk.Builder):
         to 'Time & date' tab.
         """
         widget = self.get_object('currweek')
-        widget.set_text(Schedule().get_current_week())
+        widget.set_value(Schedule().get_current_week())
 
         lessons_time = Schedule().get_lessons_time()
         for i in range(8):

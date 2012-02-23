@@ -31,6 +31,7 @@ import shelve
 import pygtk
 pygtk.require('2.0')
 import gtk
+from datetime import date
 
 
 def _singleton(cls):
@@ -190,6 +191,7 @@ class Schedule:
         _check_app_dir()
         if os.path.exists(os.path.expanduser('~/.config/scheduler/schedule')):
             self._use_existing_schedule()
+            self.update_current_week()
         else:
             self._use_default_schedule()
 
@@ -198,7 +200,7 @@ class Schedule:
         """
         gen_day = lambda: [[[-1, '', -1, '', '']] * 8] * 4
         self.schedule = {
-            'current_week': '1',
+            'current_week': [1, date.today().isocalendar()[1]],
             'lessons_time': [
                 ['8:00', '9:35'],
                 ['9:45', '11:20'],
@@ -234,15 +236,28 @@ class Schedule:
         sh['schedule'] = self.schedule
         sh.close()
 
+    def update_current_week(self):
+        """ Update current week. Week range: 1-4.
+        """
+        if self.schedule['current_week'][1] != date.today().isocalendar()[1]:
+            cw = self.schedule['current_week'][0]
+            for i in range(date.today().isocalendar()[1] -
+                           self.schedule['current_week'][1]):
+                if cw != 4:
+                    cw += 1
+                else:
+                    cw = 1
+            self.schedule['current_week'] = [cw, date.today().isocalendar()[1]]
+
     def get_current_week(self):
         """ Get current week.
         """
-        return self.schedule['current_week']
+        return self.schedule['current_week'][0]
 
     def set_current_week(self, week):
         """ Set current week.
         """
-        self.schedule['current_week'] = week
+        self.schedule['current_week'] = [week, date.today().isocalendar()[1]]
         self._save_schedule()
 
     def get_lessons_time(self):
