@@ -57,6 +57,7 @@ class PreferencesWindow(gtk.Builder):
         self._set_fonts_colors()
         self._set_time_date()
         self._set_schedule_day('Monday', 0)
+        self._set_view()
 
     def _on_ok_button_clicked(self, widget):
         """ Handler for okbutton.
@@ -86,6 +87,9 @@ class PreferencesWindow(gtk.Builder):
         self._save_fonts_colors()
         self._save_time_date()
         self._save_schedule_day()
+        self._save_view()
+        Params().save_params()
+        Schedule().save_schedule()
 
     def _save_fonts_colors(self):
         """ Save all data from 'Fonts & colors' tab to 'Params' singleton.
@@ -132,8 +136,7 @@ class PreferencesWindow(gtk.Builder):
 
         lessons_time = []
         for i in range(8):
-            lessons_time.append(
-                [
+            lessons_time.append([
                     '%s:%s' % (
                         self.get_object('l%db1' % (i + 1)).get_text(),
                         self.get_object('l%db2' % (i + 1)).get_text()
@@ -142,8 +145,7 @@ class PreferencesWindow(gtk.Builder):
                         self.get_object('l%de1' % (i + 1)).get_text(),
                         self.get_object('l%de2' % (i + 1)).get_text()
                     )
-                ]
-            )
+            ])
         Schedule().set_lessons_time(lessons_time)
 
     def _set_time_date(self):
@@ -170,15 +172,13 @@ class PreferencesWindow(gtk.Builder):
         """
         schedule = []
         for i in range(8):
-            schedule.append(
-                [
+            schedule.append([
                     self.get_object('l%dsub' % (i + 1)).get_active(),
                     self.get_object('l%dname' % (i + 1)).get_text(),
                     self.get_object('l%dtype' % (i + 1)).get_active(),
                     self.get_object('l%dclass' % (i + 1)).get_text(),
                     self.get_object('l%dlector' % (i + 1)).get_text()
-                ]
-            )
+            ])
         Schedule().set_schedule(
             self.get_object('weekday').get_active_text(),
             self.get_object('weeknum').get_active(),
@@ -196,6 +196,33 @@ class PreferencesWindow(gtk.Builder):
             self.get_object('l%dtype' % (i + 1)).set_active(schedule[i][2])
             self.get_object('l%dclass' % (i + 1)).set_text(schedule[i][3])
             self.get_object('l%dlector' % (i + 1)).set_text(schedule[i][4])
+
+    def _save_view(self):
+        """ Save all data about view settings from 'View' tab to
+        'Schedule' and 'Params' singletons.
+        """
+        Params().set_view_sch([
+            self.get_object('isnum').get_active(),
+            self.get_object('istime').get_active(),
+            self.get_object('isname').get_active(),
+            self.get_object('istype').get_active(),
+            self.get_object('isclass').get_active(),
+            self.get_object('islector').get_active()
+        ])
+        Schedule().set_subgroup(self.get_object('yoursub').get_active())
+
+    def _set_view(self):
+        """ Set all data about view settings from 'Schedule' and 'Params'
+        singletons to 'View' tab.
+        """
+        view_sch = Params().get_view_sch()
+        self.get_object('isnum').set_active(view_sch[0])
+        self.get_object('istime').set_active(view_sch[1])
+        self.get_object('isname').set_active(view_sch[2])
+        self.get_object('istype').set_active(view_sch[3])
+        self.get_object('isclass').set_active(view_sch[4])
+        self.get_object('islector').set_active(view_sch[5])
+        self.get_object('yoursub').set_active(Schedule().get_subgroup())
 
 
 if __name__ == '__main__':

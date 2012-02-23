@@ -83,9 +83,11 @@ class Params:
             'lecture_color': '#009566660000',
             'laboratory_color': '#987600000000',
             'practice_color': '#188820eda89b',
-            'day_color': '#000000000000'
+            'day_color': '#000000000000',
+            # View schedule settings
+            'view_sch': [True] * 6
         }
-        self._save_params()
+        self.save_params()
 
     def _use_existing_params(self):
         """ Initialize params from file.
@@ -94,7 +96,7 @@ class Params:
         self.params = sh['params']
         sh.close()
 
-    def _save_params(self):
+    def save_params(self):
         """ Save params dict to file.
         """
         sh = shelve.open(os.path.expanduser('~/.config/scheduler/params'))
@@ -110,7 +112,7 @@ class Params:
         """ Set wondow position.
         """
         self.params['pos'] = pos
-        self._save_params()
+        self.save_params()
 
     def get_lock_pos(self):
         """ Get lock_pos flag.
@@ -121,7 +123,7 @@ class Params:
         """ Set lock_pos flag.
         """
         self.params['lock_pos'] = lock_pos
-        self._save_params()
+        self.save_params()
 
     def get_default_font(self):
         """ Get default font.
@@ -132,7 +134,6 @@ class Params:
         """ Set default font.
         """
         self.params['default_font'] = font
-        self._save_params()
 
     def get_lecture_color(self):
         """ Get lecture color.
@@ -143,7 +144,6 @@ class Params:
         """ Set lecture color.
         """
         self.params['lecture_color'] = str(color)
-        self._save_params()
 
     def get_laboratory_color(self):
         """ Get laboratory color.
@@ -154,7 +154,6 @@ class Params:
         """ Set laboratory color.
         """
         self.params['laboratory_color'] = str(color)
-        self._save_params()
 
     def get_practice_color(self):
         """ Get practice color.
@@ -165,7 +164,6 @@ class Params:
         """ Set practice color.
         """
         self.params['practice_color'] = str(color)
-        self._save_params()
 
     def get_day_color(self):
         """ Get day color.
@@ -176,7 +174,16 @@ class Params:
         """ Set day color.
         """
         self.params['day_color'] = str(color)
-        self._save_params()
+
+    def get_view_sch(self):
+        """ Get scheduler view settings.
+        """
+        return self.params['view_sch']
+
+    def set_view_sch(self, view_sch):
+        """ Set scheduler view settings.
+        """
+        self.params['view_sch'] = view_sch
 
 
 @_singleton
@@ -218,9 +225,10 @@ class Schedule:
                 'Thursday': gen_day(),
                 'Friday': gen_day(),
                 'Saturday': gen_day()
-            }
+            },
+            'subgroup': -1
         }
-        self._save_schedule()
+        self.save_schedule()
 
     def _use_existing_schedule(self):
         """ Load existing schedule from file.
@@ -229,7 +237,7 @@ class Schedule:
         self.schedule = sh['schedule']
         sh.close()
 
-    def _save_schedule(self):
+    def save_schedule(self):
         """ Save params dict to file.
         """
         sh = shelve.open(os.path.expanduser('~/.config/scheduler/schedule'))
@@ -258,7 +266,6 @@ class Schedule:
         """ Set current week.
         """
         self.schedule['current_week'] = [week, date.today().isocalendar()[1]]
-        self._save_schedule()
 
     def get_lessons_time(self):
         """ Get lessons time.
@@ -269,7 +276,6 @@ class Schedule:
         """ Set lessons time.
         """
         self.schedule['lessons_time'] = lessons_time
-        self._save_schedule()
 
     def get_schedule(self, day, week):
         """ Get schedule by day and week.
@@ -280,7 +286,16 @@ class Schedule:
         """ Set schedule by day and week.
         """
         self.schedule['schedule'][day][week] = schedule
-        self._save_schedule()
+
+    def get_subgroup(self):
+        """ Get num of subgroup.
+        """
+        return self.schedule['subgroup']
+
+    def set_subgroup(self, subgroup):
+        """ Set num of subgroup.
+        """
+        self.schedule['subgroup'] = subgroup
 
 
 if __name__ == '__main__':
