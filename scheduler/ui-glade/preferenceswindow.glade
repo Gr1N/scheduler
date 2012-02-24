@@ -179,7 +179,7 @@
         <col id="0" translatable="yes">Monday</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Thuesday</col>
+        <col id="0" translatable="yes">Tuesday</col>
       </row>
       <row>
         <col id="0" translatable="yes">Wednesday</col>
@@ -206,6 +206,9 @@
       </row>
       <row>
         <col id="0" translatable="yes">2</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">overall</col>
       </row>
     </data>
   </object>

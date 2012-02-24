@@ -36,7 +36,7 @@ import sys
 
 from desktopwindow import DesktopWindow
 from schedulermenu import SchedulerMenu
-from datasingletons import Params
+from datasingletons import Params, Schedule
 
 
 class Scheduler:
@@ -68,14 +68,87 @@ class Scheduler:
         self.window.add_events(gtk.gdk.BUTTON_PRESS_MASK |
             gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_MOTION_MASK)
 
-    def _initialize_gui(self):  # TODO: make schedule view
+    def _initialize_gui(self):  # TODO: add auto update
         """ Initialize GUI for view schedule.
         """
-        box = gtk.HBox()
-        self.window.add(box)
+        table = gtk.Table()
+        table.set_col_spacings(8)
+        table.set_row_spacings(3)
+        self.window.add(table)
 
-        label = gtk.Label('Schedule')
-        box.pack_start(label, expand=True)
+        def plus_top_attach(f):
+
+            def plus(*args, **kwargs):
+                to_plus = f(*args, **kwargs)
+                return to_plus + 1
+
+            return plus
+
+        @plus_top_attach
+        def create_label(text, left_attach, right_attach,
+                         top_attach, bottom_attach, align=None):
+            label = gtk.Label('<span font="%s">%s</span>' %
+                              (Params().get_default_font(), text))
+            label.set_use_markup(True)
+            if align == 'left':
+                label.set_alignment(xalign=0.0, yalign=0.5)
+            elif align == 'right':
+                label.set_alignment(xalign=1.0, yalign=0.5)
+            table.attach(label, left_attach, right_attach,
+                top_attach, bottom_attach, xoptions=gtk.FILL, yoptions=False)
+            label.show()
+            return top_attach
+
+        @plus_top_attach
+        def create_separator(left_attach, right_attach,
+                             top_attach, bottom_attach):
+            separator = gtk.HSeparator()
+            table.attach(separator, left_attach, right_attach,
+                top_attach, bottom_attach, xoptions=gtk.FILL, yoptions=False)
+            separator.show()
+            return top_attach
+
+        attach = 0
+        for day in ['Monday', 'Tuesday', 'Wednesday',
+                    'Thursday', 'Friday', 'Saturday']:
+            attach = create_label('<b><span color="%s">%s</span></b>' %
+                                  (Params().get_day_color(), day), 0, 5,
+                attach, attach + 1, 'left')
+            attach = create_separator(0, 5, attach, attach + 1)
+
+            schedule = Schedule().get_schedule(day,
+                Schedule().get_current_week() - 1)
+            for i in range(8):
+                if not schedule[i][1] == '' and \
+                   (schedule[i][0] == Schedule().get_subgroup() or
+                       schedule[i][0] == 2):
+                    label_color = ''
+                    if not schedule[i][2]:
+                        label_color = '%s' % str(Params().get_lecture_color())
+                    elif schedule[i][2] == 1:
+                        label_color = '%s' % \
+                                      str(Params().get_laboratory_color())
+                    elif schedule[i][2] == 2:
+                        label_color = '%s' % str(Params().get_practice_color())
+
+                    label_template = '<span color="%s">%s</span>'
+                    create_label('<span color="%s">%d.</span>' %
+                                 (label_color, i),
+                        0, 1, attach, attach + 1)
+                    create_label(label_template % (label_color,
+                        '-'.join(Schedule().get_lessons_time()[i])),
+                        1, 2, attach, attach + 1)
+                    create_label(label_template %
+                                 (label_color, schedule[i][1]),
+                        2, 3, attach, attach + 1, 'left')
+                    create_label(label_template %
+                                 (label_color, schedule[i][3]),
+                        3, 4, attach, attach + 1)
+                    attach = create_label(label_template %
+                                          (label_color, schedule[i][4]),
+                        4, 5, attach, attach + 1, 'right')
+
+        table.show()
 
     def _initialize_menu(self):
         """ Initialize scheduler menu.

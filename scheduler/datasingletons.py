@@ -78,7 +78,7 @@ class Params:
             'pos': (100, 100),
             'lock_pos': False,
             # Font params
-            'default_font': 'Sans 12',
+            'default_font': 'Sans 9',
             # Colors params
             'lecture_color': '#009566660000',
             'laboratory_color': '#987600000000',
@@ -220,7 +220,7 @@ class Schedule:
             ],
             'schedule': {
                 'Monday': gen_day(),
-                'Thuesday': gen_day(),
+                'Tuesday': gen_day(),
                 'Wednesday': gen_day(),
                 'Thursday': gen_day(),
                 'Friday': gen_day(),
