@@ -205,7 +205,16 @@ class Schedule:
     def _use_default_schedule(self):
         """ Initialize default schedule and save it.
         """
-        gen_day = lambda: [[[-1, '', -1, '', '']] * 8] * 4
+        def gen_day():
+            dl = []
+            ll = [-1, '', -1, '', '']
+            for i in range(8):
+                dl.append(ll[:])
+            rl = []
+            for i in range(4):
+                rl.append(dl[:])
+            return rl
+
         self.schedule = {
             'current_week': [1, date.today().isocalendar()[1]],
             'lessons_time': [
@@ -286,6 +295,16 @@ class Schedule:
         """ Set schedule by day and week.
         """
         self.schedule['schedule'][day][week] = schedule
+
+    def get_all_schedule(self):
+        """ Get all schedule.
+        """
+        return self.schedule['schedule']
+
+    def set_all_schedule(self, schedule):
+        """ Set all schedule.
+        """
+        self.schedule['schedule'] = schedule
 
     def get_subgroup(self):
         """ Get num of subgroup.

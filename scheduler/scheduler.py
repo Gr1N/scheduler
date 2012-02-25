@@ -40,7 +40,7 @@ from datasingletons import Params, Schedule
 
 
 class Scheduler:
-    """ Widget, which shows a schedule into your desktop
+    """ Widget, which shows a schedule on your desktop.
     """
 
     def __init__(self):
@@ -128,7 +128,8 @@ class Scheduler:
                     elif schedule[i][2] == 1:
                         label_color = '%s' % \
                                       str(Params().get_laboratory_color())
-                    elif schedule[i][2] == 2:
+#                    elif schedule[i][2] == 2:
+                    else:  # FIX: need color when lesson without type
                         label_color = '%s' % str(Params().get_practice_color())
 
                     label_template = '<span color="%s">%s</span>'

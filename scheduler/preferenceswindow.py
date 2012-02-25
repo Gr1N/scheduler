@@ -32,6 +32,7 @@ import gtk
 import gtk.glade
 
 from datasingletons import Params, Schedule
+from excelparser import ExcelParser
 
 
 class PreferencesWindow(gtk.Builder):
@@ -50,7 +51,8 @@ class PreferencesWindow(gtk.Builder):
             'on_cancelbutton_clicked': lambda w: self._window.destroy(),
             'on_okbutton_clicked': self._on_ok_button_clicked,
             'on_weekday_changed': self._on_weekday_changed,
-            'on_weeknum_changed': self._on_weeknum_changed
+            'on_weeknum_changed': self._on_weeknum_changed,
+            'on_loadxlsbutton_clicked': self._on_loadxlsbutton_clicked
         }
         self.connect_signals(siglans_dict)
 
@@ -64,6 +66,13 @@ class PreferencesWindow(gtk.Builder):
         """
         self._save_all()
         self._window.destroy()
+
+    def _on_loadxlsbutton_clicked(self, widget):
+        """ Handler for loadxlsbutton.
+        """
+        ExcelParser()
+        self._set_schedule_day('Monday', 0)
+        Schedule().save_schedule()
 
     def _on_weekday_changed(self, widget):
         """ Handler for weekday spinbutton.
