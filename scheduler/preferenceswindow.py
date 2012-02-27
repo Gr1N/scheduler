@@ -115,6 +115,9 @@ class PreferencesWindow(gtk.Builder):
         widget = self.get_object('practicecolor')
         Params().set_practice_color(widget.get_color())
 
+        widget = self.get_object('noncolor')
+        Params().set_non_color(widget.get_color())
+
         widget = self.get_object('daycolor')
         Params().set_day_color(widget.get_color())
 
@@ -133,6 +136,9 @@ class PreferencesWindow(gtk.Builder):
 
         widget = self.get_object('practicecolor')
         widget.set_color(Params().get_practice_color())
+
+        widget = self.get_object('noncolor')
+        widget.set_color(Params().get_non_color())
 
         widget = self.get_object('daycolor')
         widget.set_color(Params().get_day_color())
@@ -214,7 +220,6 @@ class PreferencesWindow(gtk.Builder):
             self.get_object('isnum').get_active(),
             self.get_object('istime').get_active(),
             self.get_object('isname').get_active(),
-            self.get_object('istype').get_active(),
             self.get_object('isclass').get_active(),
             self.get_object('islector').get_active()
         ])
@@ -228,9 +233,8 @@ class PreferencesWindow(gtk.Builder):
         self.get_object('isnum').set_active(view_sch[0])
         self.get_object('istime').set_active(view_sch[1])
         self.get_object('isname').set_active(view_sch[2])
-        self.get_object('istype').set_active(view_sch[3])
-        self.get_object('isclass').set_active(view_sch[4])
-        self.get_object('islector').set_active(view_sch[5])
+        self.get_object('isclass').set_active(view_sch[3])
+        self.get_object('islector').set_active(view_sch[4])
         self.get_object('yoursub').set_active(Schedule().get_subgroup())
 
 

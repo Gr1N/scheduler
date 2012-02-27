@@ -83,9 +83,10 @@ class Params:
             'lecture_color': '#009566660000',
             'laboratory_color': '#987600000000',
             'practice_color': '#188820eda89b',
+            'non_color': '#0000849acdf4',
             'day_color': '#000000000000',
             # View schedule settings
-            'view_sch': [True] * 6
+            'view_sch': [True, True, True, True, True]
         }
         self.save_params()
 
@@ -165,6 +166,16 @@ class Params:
         """
         self.params['practice_color'] = str(color)
 
+    def get_non_color(self):
+        """ Get non color.
+        """
+        return gtk.gdk.Color(self.params['non_color'])
+
+    def set_non_color(self, color):
+        """ Set non color.
+        """
+        self.params['non_color'] = str(color)
+
     def get_day_color(self):
         """ Get day color.
         """
@@ -235,7 +246,7 @@ class Schedule:
                 'Friday': gen_day(),
                 'Saturday': gen_day()
             },
-            'subgroup': -1
+            'subgroup': 0
         }
         self.save_schedule()
 

@@ -115,16 +115,20 @@ class ExcelParser:
 
         schedule = Schedule().get_all_schedule()
         for currentRow in range(3, sheet.nrows):
-            day = get_day(sheet.cell_value(currentRow, 0))
-            lesson_index = get_lesson_index(sheet.cell_value(currentRow, 2))
-            for week in get_weeks(sheet.cell_value(currentRow, 1)):
-                schedule[day][week][lesson_index] = [
-                    get_subgroup(sheet.cell_value(currentRow, 3)),
-                    sheet.cell_value(currentRow, 4),
-                    get_type(sheet.cell_value(currentRow, 5)),
-                    sheet.cell_value(currentRow, 6),
-                    sheet.cell_value(currentRow, 7)
-                ]
+            if get_subgroup(sheet.cell_value(currentRow, 3)) == \
+               Schedule().get_subgroup() or \
+               get_subgroup(sheet.cell_value(currentRow, 3)) == 2:
+                day = get_day(sheet.cell_value(currentRow, 0))
+                lesson_index = get_lesson_index(sheet.cell_value(
+                    currentRow, 2))
+                for week in get_weeks(sheet.cell_value(currentRow, 1)):
+                    schedule[day][week][lesson_index] = [
+                        get_subgroup(sheet.cell_value(currentRow, 3)),
+                        sheet.cell_value(currentRow, 4),
+                        get_type(sheet.cell_value(currentRow, 5)),
+                        sheet.cell_value(currentRow, 6),
+                        sheet.cell_value(currentRow, 7)
+                    ]
         Schedule().set_all_schedule(schedule)
 
 

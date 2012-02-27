@@ -128,9 +128,10 @@ class Scheduler:
                     elif schedule[i][2] == 1:
                         label_color = '%s' % \
                                       str(Params().get_laboratory_color())
-#                    elif schedule[i][2] == 2:
-                    else:  # FIX: need color when lesson without type
+                    elif schedule[i][2] == 2:
                         label_color = '%s' % str(Params().get_practice_color())
+                    else:
+                        label_color = '%s' % str(Params().get_non_color())
 
                     label_template = '<span color="%s">%s</span>'
                     create_label('<span color="%s">%d.</span>' %
