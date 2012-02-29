@@ -100,6 +100,12 @@ class PreferencesWindow(gtk.Builder):
         Params().save_params()
         Schedule().save_schedule()
 
+        builder = gtk.Builder()
+        builder.add_from_file('ui-glade/preferencesmessagedialog.glade')
+        dialog = builder.get_object('preferencesmessagedialog')
+        dialog.run()
+        dialog.hide()
+
     def _save_fonts_colors(self):
         """ Save all data from 'Fonts & colors' tab to 'Params' singleton.
         """
