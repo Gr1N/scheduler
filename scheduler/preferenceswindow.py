@@ -121,6 +121,15 @@ class PreferencesWindow(gtk.Builder):
         widget = self.get_object('daycolor')
         Params().set_day_color(widget.get_color())
 
+        widget = self.get_object('fulltransparent')
+        Params().set_is_window_transparent(widget.get_active())
+
+        widget = self.get_object('transparentcolor')
+        Params().set_window_color(widget.get_color())
+
+        widget = self.get_object('transparentpercent')
+        Params().set_transparent_percent(widget.get_value())
+
     def _set_fonts_colors(self):
         """ Set all font and color data from 'Params' singleton
         to 'Fonts & colors' tab.
@@ -142,6 +151,16 @@ class PreferencesWindow(gtk.Builder):
 
         widget = self.get_object('daycolor')
         widget.set_color(Params().get_day_color())
+
+        if not Params().get_is_window_transparent():
+            widget = self.get_object('notfulltransparent')
+            widget.set_active(True)
+
+        widget = self.get_object('transparentcolor')
+        widget.set_color(Params().get_window_color())
+
+        widget = self.get_object('transparentpercent')
+        widget.set_value(Params().get_transparent_percent())
 
     def _save_time_date(self):
         """ Save all data from 'Time & date' tab to 'Schedule' singleton.

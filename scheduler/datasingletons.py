@@ -79,12 +79,16 @@ class Params:
             'lock_pos': False,
             # Font params
             'default_font': 'Sans 9',
-            # Colors params
+            # Lessons colors
             'lecture_color': '#009566660000',
             'laboratory_color': '#987600000000',
             'practice_color': '#188820eda89b',
             'non_color': '#0000849acdf4',
             'day_color': '#000000000000',
+            # Window style
+            'full_transparent': True,
+            'window_color': '#5ad65ad65ad6',
+            'transparent_percent': 50.0,
             # View schedule settings
             'view_sch': [True, True, True, True, True]
         }
@@ -195,6 +199,36 @@ class Params:
         """ Set scheduler view settings.
         """
         self.params['view_sch'] = view_sch
+
+    def get_is_window_transparent(self):
+        """ Get flag for window transparent.
+        """
+        return self.params['full_transparent']
+
+    def set_is_window_transparent(self, flag):
+        """ Set flag for window transparent.
+        """
+        self.params['full_transparent'] = flag
+
+    def get_window_color(self):
+        """ Get window color.
+        """
+        return gtk.gdk.Color(self.params['window_color'])
+
+    def set_window_color(self, color):
+        """ Set window color.
+        """
+        self.params['window_color'] = str(color)
+
+    def get_transparent_percent(self):
+        """ Get window transparent percent.
+        """
+        return self.params['transparent_percent']
+
+    def set_transparent_percent(self, percent):
+        """ Set window transparent percent.
+        """
+        self.params['transparent_percent'] = percent
 
 
 @_singleton

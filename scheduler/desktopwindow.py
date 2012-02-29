@@ -31,6 +31,8 @@ pygtk.require('2.0')
 import gtk
 import cairo
 
+from datasingletons import Params
+
 
 class DesktopWindow(gtk.Window):
     """ A transparent and borderless window, fixed on the desktop.
@@ -56,7 +58,16 @@ class DesktopWindow(gtk.Window):
         """ Make the given widget transparent.
         """
         cr = widget.window.cairo_create()
-        cr.set_operator(cairo.OPERATOR_CLEAR)
+
+        if Params().get_is_window_transparent():
+            cr.set_operator(cairo.OPERATOR_CLEAR)
+        else:
+            cr.set_operator(cairo.OPERATOR_OVER)
+            cr.set_source_rgba(Params().get_window_color().red_float,
+                Params().get_window_color().green_float,
+                Params().get_window_color().blue_float,
+                Params().get_transparent_percent() / 100)
+
         region = gtk.gdk.region_rectangle(event.area)
         cr.region(region)
         cr.fill()
