@@ -122,7 +122,7 @@ class Scheduler:
                 if not schedule[i][1] == '' and \
                    (schedule[i][0] == Schedule().get_subgroup() or
                        schedule[i][0] == 2):
-                    label_color = ''
+#                    label_color = ''
                     if not schedule[i][2]:
                         label_color = '%s' % str(Params().get_lecture_color())
                     elif schedule[i][2] == 1:
