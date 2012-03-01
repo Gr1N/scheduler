@@ -29,6 +29,7 @@ excelparser.py - Excel files parser for scheduler
 import pygtk
 pygtk.require('2.0')
 import gtk
+import gtk.glade
 import xlrd
 
 from datasingletons import Schedule
@@ -57,8 +58,17 @@ class ExcelParser:
 
         response = dialog.run()
         if response == gtk.RESPONSE_OK:
-            # TODO: check is file correct and add gui message for this
-            self._parse_excel_file(dialog.get_filename())
+            try:
+                self._parse_excel_file(dialog.get_filename())
+                Schedule().save_schedule()
+            except xlrd.biffh.XLRDError, e:
+                print e
+                builder = gtk.Builder()
+                builder.add_from_file('ui-glade/excelparsererrordialog.glade')
+                erdialog = builder.get_object('excelparsererrordialog')
+                erdialog.run()
+                erdialog.hide()
+            
         dialog.destroy()
 
     def _parse_excel_file(self, filename):

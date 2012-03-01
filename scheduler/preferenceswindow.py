@@ -72,7 +72,6 @@ class PreferencesWindow(gtk.Builder):
         """
         ExcelParser()
         self._set_schedule_day('Monday', 0)
-        Schedule().save_schedule()
 
     def _on_weekday_changed(self, widget):
         """ Handler for weekday spinbutton.
