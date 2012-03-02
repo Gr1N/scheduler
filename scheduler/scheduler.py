@@ -79,8 +79,8 @@ class Scheduler:
         def plus_top_attach(f):
 
             def plus(*args, **kwargs):
-                to_plus = f(*args, **kwargs)
-                return to_plus + 1
+                top_attach, left_attach = f(*args, **kwargs)
+                return top_attach + 1, left_attach + 1
 
             return plus
 
@@ -97,7 +97,7 @@ class Scheduler:
             table.attach(label, left_attach, right_attach,
                 top_attach, bottom_attach, xoptions=gtk.FILL, yoptions=False)
             label.show()
-            return top_attach
+            return top_attach, left_attach
 
         @plus_top_attach
         def create_separator(left_attach, right_attach,
@@ -106,15 +106,18 @@ class Scheduler:
             table.attach(separator, left_attach, right_attach,
                 top_attach, bottom_attach, xoptions=gtk.FILL, yoptions=False)
             separator.show()
-            return top_attach
+            return top_attach, left_attach
 
-        attach = 0
+        tattach, tlen, view_sch = 0, 0, Params().get_view_sch()
+        for i in view_sch:
+            if i:
+                tlen += 1
         for day in ['Monday', 'Tuesday', 'Wednesday',
                     'Thursday', 'Friday', 'Saturday']:
-            attach = create_label('<b><span color="%s">%s</span></b>' %
-                                  (Params().get_day_color(), day), 0, 5,
-                attach, attach + 1, 'left')
-            attach = create_separator(0, 5, attach, attach + 1)
+            tattach = create_label('<b><span color="%s">%s</span></b>' %
+                                   (Params().get_day_color(), day), 0, tlen,
+                tattach, tattach + 1, 'left')[0]
+            tattach = create_separator(0, tlen, tattach, tattach + 1)[0]
 
             schedule = Schedule().get_schedule(day,
                 Schedule().get_current_week() - 1)
@@ -133,21 +136,30 @@ class Scheduler:
                         label_color = '%s' % str(Params().get_non_color())
 
                     label_template = '<span color="%s">%s</span>'
-                    create_label('<span color="%s">%d.</span>' %
-                                 (label_color, i),
-                        0, 1, attach, attach + 1)
-                    create_label(label_template % (label_color,
-                        '-'.join(Schedule().get_lessons_time()[i])),
-                        1, 2, attach, attach + 1)
-                    create_label(label_template %
-                                 (label_color, schedule[i][1]),
-                        2, 3, attach, attach + 1, 'left')
-                    create_label(label_template %
-                                 (label_color, schedule[i][3]),
-                        3, 4, attach, attach + 1)
-                    attach = create_label(label_template %
-                                          (label_color, schedule[i][4]),
-                        4, 5, attach, attach + 1, 'right')
+                    lattach = 0
+                    if view_sch[0]:
+                        lattach = create_label('<span color="%s">%d.</span>' %
+                                               (label_color, i),
+                            lattach, lattach + 1, tattach, tattach + 1)[1]
+                    if view_sch[1]:
+                        lattach = create_label(label_template % (label_color,
+                            '-'.join(Schedule().get_lessons_time()[i])),
+                            lattach, lattach + 1, tattach, tattach + 1)[1]
+                    if view_sch[2]:
+                        lattach = create_label(label_template %
+                                               (label_color, schedule[i][1]),
+                            lattach, lattach + 1,
+                            tattach, tattach + 1, 'left')[1]
+                    if view_sch[3]:
+                        lattach = create_label(label_template %
+                                               (label_color, schedule[i][3]),
+                            lattach, lattach + 1, tattach, tattach + 1)[1]
+                    if view_sch[4]:
+                        create_label(label_template %
+                                     (label_color, schedule[i][4]),
+                            lattach, lattach + 1,
+                            tattach, tattach + 1, 'right')
+                    tattach += 1
 
         table.show()
 
