@@ -33,6 +33,8 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import sys
+import multiprocessing
+import time
 
 from desktopwindow import DesktopWindow
 from schedulermenu import SchedulerMenu
@@ -49,10 +51,14 @@ class Scheduler:
         self.window = DesktopWindow()
 
         self._initialize_settings()
-        self._initialize_gui()
+        self._initialize_table()
         self._initialize_menu()
 
         self.window.show_all()
+
+        pr = multiprocessing.Process(target=self._update_schedule, args=(60,))
+        pr.daemon = True
+        pr.start()
 
     def _initialize_settings(self):
         """ Initialize schedule settings.
@@ -68,14 +74,19 @@ class Scheduler:
         self.window.add_events(gtk.gdk.BUTTON_PRESS_MASK |
             gtk.gdk.BUTTON_RELEASE_MASK | gtk.gdk.BUTTON_MOTION_MASK)
 
-    def _initialize_gui(self):  # TODO: add auto update
-        """ Initialize GUI for view schedule.
+    def _initialize_table(self):
+        """ Initialize gtk.Table() for view schedule.
         """
-        table = gtk.Table()
-        table.set_col_spacings(8)
-        table.set_row_spacings(3)
-        self.window.add(table)
+        self.table = gtk.Table()
+        self.table.set_col_spacings(8)
+        self.table.set_row_spacings(3)
+        self.window.add(self.table)
+        self._view_schedule()
+        self.table.show()
 
+    def _view_schedule(self):
+        """ Insert labels with schedule information to table.
+        """
         def plus_top_attach(f):
 
             def plus(*args, **kwargs):
@@ -94,7 +105,7 @@ class Scheduler:
                 label.set_alignment(xalign=0.0, yalign=0.5)
             elif align == 'right':
                 label.set_alignment(xalign=1.0, yalign=0.5)
-            table.attach(label, left_attach, right_attach,
+            self.table.attach(label, left_attach, right_attach,
                 top_attach, bottom_attach, xoptions=gtk.FILL, yoptions=False)
             label.show()
             return top_attach, left_attach
@@ -103,7 +114,7 @@ class Scheduler:
         def create_separator(left_attach, right_attach,
                              top_attach, bottom_attach):
             separator = gtk.HSeparator()
-            table.attach(separator, left_attach, right_attach,
+            self.table.attach(separator, left_attach, right_attach,
                 top_attach, bottom_attach, xoptions=gtk.FILL, yoptions=False)
             separator.show()
             return top_attach, left_attach
@@ -161,7 +172,15 @@ class Scheduler:
                             tattach, tattach + 1, 'right')
                     tattach += 1
 
-        table.show()
+    def _update_schedule(self, interval):
+        """ Subprocess function. Check for num of week,
+        if it changed, then update schedule view.
+        """
+        while True:
+            if Schedule().update_current_week():
+                self._view_schedule()
+                print 'Yes'
+            time.sleep(interval)
 
     def _initialize_menu(self):
         """ Initialize scheduler menu.
@@ -197,8 +216,8 @@ class Scheduler:
 
 
 def main():
+    Scheduler()
     print 'Scheduler is running.\nLook at your desktop!'
-    instance = Scheduler()
     try:
         gtk.main()
     except KeyboardInterrupt:

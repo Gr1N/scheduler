@@ -246,6 +246,7 @@ class Schedule:
             self.update_current_week()
         else:
             self._use_default_schedule()
+        self.save_schedule()
 
     def _use_default_schedule(self):
         """ Initialize default schedule and save it.
@@ -282,7 +283,6 @@ class Schedule:
             },
             'subgroup': 0
         }
-        self.save_schedule()
 
     def _use_existing_schedule(self):
         """ Load existing schedule from file.
@@ -310,6 +310,9 @@ class Schedule:
                 else:
                     cw = 1
             self.schedule['current_week'] = [cw, date.today().isocalendar()[1]]
+            return True
+        else:
+            return False
 
     def get_current_week(self):
         """ Get current week.
