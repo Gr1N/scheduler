@@ -68,7 +68,7 @@ class ExcelParser:
                 erdialog = builder.get_object('excelparsererrordialog')
                 erdialog.run()
                 erdialog.hide()
-            
+
         dialog.destroy()
 
     def _parse_excel_file(self, filename):
